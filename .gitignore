@@ -1,0 +1,34 @@
+# --- Personal data: never commit real statements or exports (CLAUDE.md §8) ---
+*.csv
+*.pdf
+*.xlsx
+!**/test/resources/fixtures/**/*.csv
+!**/test/resources/fixtures/**/*.pdf
+!**/test/resources/fixtures/**/*.xlsx
+private/
+
+# --- Secrets ---
+.env*
+!.env.example
+*.key
+*.pem
+keyset*.json
+
+# --- Backend (Java) ---
+target/
+build/
+.gradle/
+*.class
+*.log
+
+# --- Frontend (Angular) ---
+node_modules/
+dist/
+.angular/
+
+# --- Editors / OS ---
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db

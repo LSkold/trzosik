@@ -1,0 +1,37 @@
+// Tailscale policy for the family tailnet (CLAUDE.md §8, §9).
+// Paste into https://login.tailscale.com/admin/acls and replace the example emails.
+// Only what is listed here is allowed; everything else is denied.
+{
+  "groups": {
+    // The iPad is signed in with Łukasz's login for now, so it has the same
+    // access as his iPhone. To limit it to the game later, give the son his
+    // own login, add "group:kids" and grant it only tag:game.
+    "group:family": ["lukasz@example.com", "wife@example.com"],
+  },
+
+  "tagOwners": {
+    "tag:server":  ["autogroup:admin"], // the host itself (SSH/deploy only)
+    "tag:ci":      ["autogroup:admin"], // GitHub Actions (ephemeral)
+    "tag:trzosik": ["autogroup:admin"], // trzosik's Tailscale sidecar
+    "tag:game":    ["autogroup:admin"], // the iPad game's sidecar
+  },
+
+  "grants": [
+    // Both iPhones reach trzosik over HTTPS only.
+    {"src": ["group:family"], "dst": ["tag:trzosik"], "ip": ["tcp:443"]},
+    // Family devices (incl. the iPad) open the game.
+    {"src": ["group:family"], "dst": ["tag:game"],    "ip": ["tcp:443"]},
+    // CI reaches only SSH on the host.
+    {"src": ["tag:ci"],       "dst": ["tag:server"],  "ip": ["tcp:22"]},
+    // Łukasz can SSH to the host (rarely needed).
+    {"src": ["lukasz@example.com"], "dst": ["tag:server"], "ip": ["tcp:22"]},
+  ],
+
+  "ssh": [
+    // CI deploys as the unprivileged "deploy" user.
+    {"action": "accept", "src": ["tag:ci"], "dst": ["tag:server"], "users": ["deploy"]},
+    // Łukasz: re-authenticate in the browser at most every 12h.
+    {"action": "check", "src": ["lukasz@example.com"], "dst": ["tag:server"],
+     "users": ["deploy", "root"], "checkPeriod": "12h"},
+  ],
+}
