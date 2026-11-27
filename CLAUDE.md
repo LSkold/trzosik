@@ -193,9 +193,9 @@ All money is stored as `amount_minor BIGINT` (grosze) plus a `currency CHAR(3)`.
 These are hard rules. Claude Code must follow them in every PR.
 
 **Network**
-- No public ports. The server, both iPhones and the kids' iPad are on **Tailscale**. HTTPS uses Tailscale's certificate on the private `*.ts.net` name (`tailscale serve`), which a PWA install needs.
+- No public ports. The server, both iPhones and the iPad are on **Tailscale**. HTTPS uses Tailscale's certificate on the private `*.ts.net` name (`tailscale serve`), which a PWA install needs.
 - Only **Tailscale SSH**. OpenSSH is not exposed; the Hetzner Cloud Firewall has **no inbound rules** (Tailscale works over outbound connections only).
-- Tailscale ACLs decide who reaches which app: the phones reach `trzosik`, the iPad reaches only the game, `tag:ci` reaches only SSH on `tag:server`.
+- Tailscale ACLs decide who reaches which app: family devices reach `trzosik` and the game, `tag:ci` reaches only SSH on `tag:server`. The iPad uses Łukasz's login for now; limiting it to the game later needs a separate login for the son.
 
 **Data**
 - Hosting in the EU only (Hetzner Falkenstein, Nuremberg or Helsinki).
@@ -242,7 +242,7 @@ These are hard rules. Claude Code must follow them in every PR.
   - The host itself is a separate node `tag:server`, used only for SSH/deploy.
 - **trzosik compose services:** `ts` (Tailscale sidecar), `web` (nginx serving the Angular build and proxying `/api`), `backend`, `postgres`.
 - **Deploy:** on every merge to `main`, GitHub Actions builds the images, pushes them to GHCR, joins the tailnet with `tailscale/github-action` (OAuth client, ephemeral, `tag:ci`), and over Tailscale SSH runs `docker login ghcr.io` with the job's short-lived `GITHUB_TOKEN`, then `docker compose pull && docker compose up -d` in `/srv/apps/trzosik`. No long-lived registry token on the server.
-- **Tailscale ACL (sketch):** `group:family` (Łukasz, wife) → `tag:trzosik:443`; `tag:kids` (iPad) → `tag:game:443`; `tag:ci` → `tag:server` SSH only; Łukasz → `tag:server` SSH.
+- **Tailscale ACL (sketch):** `group:family` (Łukasz, wife) → `tag:trzosik:443`; `tag:ci` → `tag:server` SSH only; Łukasz → `tag:server` SSH.
 
 ## 10. Dev workflow (phone-first)
 

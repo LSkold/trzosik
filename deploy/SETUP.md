@@ -7,12 +7,12 @@ All steps except the Tailscale policy editor work fine in a phone browser.
 
 - On Łukasz's iPhone: **GitHub** (review and merge PRs), **Claude**, **Tailscale**.
 - On the wife's iPhone: **Tailscale**.
-- On the iPad: **Tailscale**, signed in with the son's own login (see `group:kids`).
+- On the iPad: **Tailscale**, signed in with Łukasz's login (for now; see the note in `deploy/tailscale-acl.hujson`).
 
 ## 2. Tailscale (PC is more comfortable)
 
 1. Create the tailnet. In **DNS**, enable MagicDNS and HTTPS Certificates.
-2. Invite the wife's and the son's logins.
+2. Invite the wife's login.
 3. **Access controls:** paste `deploy/tailscale-acl.hujson`, replace the example emails, save.
 4. **Settings → Keys:** create a one-off, pre-approved **auth key** with tag `tag:server`. It is used once in step 3.
 5. **Settings → OAuth clients:** create a client with scope `auth_keys` (write) and tag `tag:ci`. Keep the client ID and secret for step 4.

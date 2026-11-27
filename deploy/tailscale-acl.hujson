@@ -3,9 +3,10 @@
 // Only what is listed here is allowed; everything else is denied.
 {
   "groups": {
+    // The iPad is signed in with Łukasz's login for now, so it has the same
+    // access as his iPhone. To limit it to the game later, give the son his
+    // own login, add "group:kids" and grant it only tag:game.
     "group:family": ["lukasz@example.com", "wife@example.com"],
-    // Son's own Tailscale login, used only on the iPad.
-    "group:kids":   ["son@example.com"],
   },
 
   "tagOwners": {
@@ -18,10 +19,8 @@
   "grants": [
     // Both iPhones reach trzosik over HTTPS only.
     {"src": ["group:family"], "dst": ["tag:trzosik"], "ip": ["tcp:443"]},
-    // Family can also open the game (e.g. to test it).
+    // Family devices (incl. the iPad) open the game.
     {"src": ["group:family"], "dst": ["tag:game"],    "ip": ["tcp:443"]},
-    // The iPad reaches only the game.
-    {"src": ["group:kids"],   "dst": ["tag:game"],    "ip": ["tcp:443"]},
     // CI reaches only SSH on the host.
     {"src": ["tag:ci"],       "dst": ["tag:server"],  "ip": ["tcp:22"]},
     // Łukasz can SSH to the host (rarely needed).
